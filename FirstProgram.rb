@@ -100,7 +100,7 @@ class Game
     unless finished?
       Square.new(x: @food_x * GRID_SIZE, y: @food_y * GRID_SIZE, size: GRID_SIZE, color: 'red')
     end
-      Text.new(text_message, color: "white", x:15, y:15, size:15)
+      text_message
   end
 
   def snake_hit_ball?(x, y)
@@ -130,19 +130,21 @@ class Game
 
   def text_message
     if finished?
-      "Game over, your score was: #{@score}. Press R to restart"
+      Text.new("Game over, your score was: #{@score}. Press R to restart", color: "green", x:15, y:15, size:15)
       else
-      "Score: #{@score}"
+      Text.new("Score: #{@score}", color: "white", x:15, y:15, size:15)
     end
   end
 
 end
 
+
 snake = Snake.new
 game = Game.new
+boom = Sound.new('effect1.wav')
+song = Music.new('song1.mp3')
 
 #a cada frame faça isto:
-
 update do
     clear
 
@@ -155,6 +157,7 @@ update do
     if game.snake_hit_ball?(snake.x, snake.y)
       game.record_hit
       snake.grow
+      boom.play
     end
 
     if snake.hit_itself?
@@ -176,6 +179,12 @@ on :key_down do |event|
         game = Game.new
       end
     end
+end
+
+if Game.new
+  song.play
+  song.loop = true
+  Music.volume = 30
 end
 
 show
